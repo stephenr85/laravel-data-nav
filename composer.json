@@ -1,6 +1,6 @@
 {
     "name": "rushing/laravel-data-nav",
-    "description": "Domain-agnostic navigation spine for Laravel. A serializable nav tree (NavItem / NavTree) with server-resolved active-state (NavResolver), consumable by both Inertia/React (JSON) and Blade (array) hosts. Emits no HTML. Part of the laravel-data-* family.",
+    "description": "Domain-agnostic navigation spine for Laravel. A polymorphic NavItem interface with SchemaIdentity DTO implementations (static NavLink + invocable-backed InvokableNavItem) and a NavTree, resolved server-side through a laravel-popcorn invocable. Consumable by both Inertia/React (JSON) and Blade (array) hosts. Emits no HTML. Part of the laravel-data-* family.",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -8,9 +8,21 @@
         "illuminate/contracts": "^12.0",
         "illuminate/http": "^12.0",
         "illuminate/support": "^12.0",
+        "rushing/laravel-data-schemas": "dev-main",
+        "rushing/laravel-popcorn": "dev-main",
         "spatie/laravel-data": "^4.0",
         "spatie/laravel-package-tools": "^1.16"
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-data-schemas.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/stephenr85/laravel-popcorn.git"
+        }
+    ],
     "require-dev": {
         "orchestra/testbench": "^10.0",
         "pestphp/pest": "^3.0",

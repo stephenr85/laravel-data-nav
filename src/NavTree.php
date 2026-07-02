@@ -4,32 +4,46 @@ declare(strict_types=1);
 
 namespace Rushing\DataNav;
 
+use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
 
 /**
- * An ordered collection of NavItems forming one navigation region (a sidebar,
- * a primary menu, a Topics submenu). Hosts compose a full nav from several
- * sources — chrome items plus contributed subtrees. Serializes to JSON
- * (Inertia) or array (Blade).
+ * An ordered collection of nav nodes forming one navigation region (a sidebar,
+ * a primary menu, a Topics submenu). Items are a polymorphic {@see NavNode}
+ * union — static {@see NavLink}s and invocable-backed {@see InvokableNavItem}s
+ * hydrate into their concrete kind via the node `kind` discriminator.
+ *
+ * Serializes to JSON (Inertia) or array (Blade) with nested children preserved.
+ * A versioned schema (`nav/tree`, v1) via {@see SchemaIdentity}. Not `final`.
  */
-final class NavTree extends Data
+class NavTree extends Data implements SchemaIdentity
 {
     /**
-     * @param  array<int, NavItem>  $items
+     * @param  array<int, NavNode>  $items
      */
     public function __construct(
-        #[DataCollectionOf(NavItem::class)]
+        #[DataCollectionOf(NavNode::class)]
         public array $items = [],
     ) {}
 
     /**
-     * Construct from an ordered list of NavItems.
+     * Construct from an ordered list of nav nodes.
      *
-     * @param  array<int, NavItem>  $items
+     * @param  array<int, NavNode>  $items
      */
     public static function make(array $items = []): self
     {
         return new self(items: array_values($items));
+    }
+
+    public static function schemaName(): string
+    {
+        return 'nav/tree';
+    }
+
+    public static function schemaVersion(): int
+    {
+        return 1;
     }
 }

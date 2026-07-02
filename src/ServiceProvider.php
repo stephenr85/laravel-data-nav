@@ -13,9 +13,4 @@ class ServiceProvider extends PackageServiceProvider
     {
         $package->name('laravel-data-nav');
     }
-
-    public function packageRegistered(): void
-    {
-        $this->app->singleton(NavResolver::class, fn (): NavResolver => new NavResolver);
-    }
 }
