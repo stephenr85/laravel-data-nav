@@ -7,17 +7,21 @@ namespace Rushing\DataNav;
 use Rushing\DataNav\Contracts\NavMatcher;
 use Rushing\Popcorn\Binding;
 use Rushing\Popcorn\Contracts\Invocable;
+use Rushing\Popcorn\InvocableRegistry;
 
 /**
  * Active-state resolution as a transport-agnostic popcorn capability — the
  * family shape that replaces the old monolithic URL highlighter. Given a
- * serialized tree and the current path, it walks the tree once and stamps
- * `active` on each matching node and `activeTrail` on every ancestor of an
- * active descendant, using the bound {@see NavMatcher}.
+ * serialized tree and the current path, it walks the tree once, **expands** any
+ * invocable-backed node (an {@see InvokableNavItem} builds its own children by
+ * dispatching its named capability through the shared {@see InvocableRegistry}),
+ * then stamps `active` on each matching node and `activeTrail` on every ancestor
+ * of an active descendant, using the bound {@see NavMatcher}.
  *
- * Input `{ tree: array, path: string }`; output `{ tree: array }` (stamped).
- * Invocable-backed subtree *expansion* is layered on in a later slice; this one
- * only stamps.
+ * Input `{ tree: array, path: string }`; output `{ tree: array }` (expanded +
+ * stamped). An invocable that returns children reuses the same output shape as
+ * this resolver — `{ items: array }` — and an unknown invocable name degrades to
+ * empty children, never an error.
  *
  * Infrastructure, so `final`.
  */
@@ -25,6 +29,7 @@ final class ResolveNav implements Invocable
 {
     public function __construct(
         private readonly NavMatcher $matcher,
+        private readonly InvocableRegistry $registry,
     ) {}
 
     public function name(): string
@@ -82,13 +87,41 @@ final class ResolveNav implements Invocable
     }
 
     /**
-     * The children to walk. Static nodes yield their held children; a later
-     * slice overrides this seam to expand invocable-backed nodes.
+     * The children to walk. A static node yields its held children; an
+     * invocable-backed node builds its children on demand by dispatching its
+     * capability. Expansion is recursive by construction — an expanded child may
+     * itself be invocable-backed and is walked in turn.
      *
      * @return array<int, NavNode>
      */
     private function childrenOf(NavNode $node, string $path): array
     {
+        if ($node instanceof InvokableNavItem) {
+            return $this->expand($node);
+        }
+
         return $node->children();
+    }
+
+    /**
+     * Dispatch the node's capability and hydrate the returned nodes. An
+     * unregistered name degrades to empty children (safe), never an error.
+     *
+     * @return array<int, NavNode>
+     */
+    private function expand(InvokableNavItem $node): array
+    {
+        if (! $this->registry->has($node->invocable)) {
+            return [];
+        }
+
+        $output = $this->registry->invoke($node->invocable, $node->input);
+
+        $items = is_array($output['items'] ?? null) ? $output['items'] : [];
+
+        return array_values(array_map(
+            fn (mixed $item): NavNode => $item instanceof NavNode ? $item : NavNode::from($item),
+            $items,
+        ));
     }
 }
