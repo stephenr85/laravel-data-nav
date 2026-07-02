@@ -22,8 +22,6 @@ use Spatie\LaravelData\Data;
  * {@see NavLink} and {@see InvokableNavItem} nodes. The `kind` value is the
  * on-the-wire discriminator; each concrete kind also carries its own schema
  * `$id` (via {@see SchemaIdentity}).
- *
- * Not `final` — nodes are DTOs; hosts and sibling kinds extend this.
  */
 abstract class NavNode extends Data implements NavItem, PropertyMorphableData
 {

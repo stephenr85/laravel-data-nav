@@ -13,8 +13,6 @@ use Rushing\DataNav\Contracts\NavMatcher;
  * `Str::is` semantics, e.g. `blog/*`) matches the path; with no `match`, its
  * `href` must equal the path exactly. Paths and patterns are slash-normalized so
  * `/blog`, `blog`, and `blog/` compare equal.
- *
- * Infrastructure, so `final` — the interface, not this class, is the seam.
  */
 final class PathNavMatcher implements NavMatcher
 {

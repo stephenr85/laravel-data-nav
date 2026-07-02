@@ -17,8 +17,7 @@ use Spatie\LaravelData\Attributes\DataCollectionOf;
  * later — transport-agnostic by construction.
  *
  * A versioned schema (`nav/invokable-item`, v1) via {@see SchemaIdentity}, so a
- * mixed tree of {@see NavLink} and this kind is a discriminable union. Not
- * `final`.
+ * mixed tree of {@see NavLink} and this kind is a discriminable union.
  */
 class InvokableNavItem extends NavNode implements SchemaIdentity
 {

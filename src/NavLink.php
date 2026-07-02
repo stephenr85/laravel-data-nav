@@ -13,7 +13,7 @@ use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
  *
  * A versioned, absolutely-addressable schema (`nav/link`, v1) via
  * {@see SchemaIdentity}, so it joins the family's Data → JSON Schema → TS
- * pipeline. Not `final` — a host may extend it.
+ * pipeline.
  */
 class NavLink extends NavNode implements SchemaIdentity
 {

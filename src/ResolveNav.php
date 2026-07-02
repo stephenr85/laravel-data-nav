@@ -22,8 +22,6 @@ use Rushing\Popcorn\InvocableRegistry;
  * stamped). An invocable that returns children reuses the same output shape as
  * this resolver — `{ items: array }` — and an unknown invocable name degrades to
  * empty children, never an error.
- *
- * Infrastructure, so `final`.
  */
 final class ResolveNav implements Invocable
 {

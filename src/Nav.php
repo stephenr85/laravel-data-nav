@@ -13,8 +13,6 @@ use Rushing\Popcorn\InvocableRegistry;
  * host resolves active-state against the current request without hand-building
  * the transport array. Hydrates the path, dispatches through the shared
  * {@see InvocableRegistry}, and rehydrates a {@see NavTree}.
- *
- * Infrastructure, so `final`.
  */
 final class Nav
 {
