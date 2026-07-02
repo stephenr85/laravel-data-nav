@@ -94,4 +94,21 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
     {
         return $this->children !== [];
     }
+
+    /**
+     * A copy of this node with active-state and children replaced, preserving
+     * the concrete node kind (and any extra fields, e.g. an invocable name) via
+     * clone. Used by resolution to stamp a fresh, immutable-ish tree.
+     *
+     * @param  array<int, NavNode>  $children
+     */
+    public function stamped(bool $active, bool $activeTrail, array $children): static
+    {
+        $clone = clone $this;
+        $clone->active = $active;
+        $clone->activeTrail = $activeTrail;
+        $clone->children = $children;
+
+        return $clone;
+    }
 }
