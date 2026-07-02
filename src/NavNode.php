@@ -10,6 +10,7 @@ use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\PropertyForMorph;
 use Spatie\LaravelData\Contracts\PropertyMorphableData;
 use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
  * The abstract Data base every nav node extends. It holds the shared node shape
@@ -23,6 +24,7 @@ use Spatie\LaravelData\Data;
  * on-the-wire discriminator; each concrete kind also carries its own schema
  * `$id` (via {@see SchemaIdentity}).
  */
+#[TypeScript]
 abstract class NavNode extends Data implements NavItem, PropertyMorphableData
 {
     /**

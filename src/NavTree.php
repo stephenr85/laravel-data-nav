@@ -7,6 +7,7 @@ namespace Rushing\DataNav;
 use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
  * An ordered collection of nav nodes forming one navigation region (a sidebar,
@@ -17,6 +18,7 @@ use Spatie\LaravelData\Data;
  * Serializes to JSON (Inertia) or array (Blade) with nested children preserved.
  * A versioned schema (`nav/tree`, v1) via {@see SchemaIdentity}. Not `final`.
  */
+#[TypeScript]
 class NavTree extends Data implements SchemaIdentity
 {
     /**

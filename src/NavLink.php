@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rushing\DataNav;
 
 use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
  * The static nav node — the common case: a titled link with an optional match
@@ -15,6 +16,7 @@ use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
  * {@see SchemaIdentity}, so it joins the family's Data → JSON Schema → TS
  * pipeline.
  */
+#[TypeScript]
 class NavLink extends NavNode implements SchemaIdentity
 {
     /**

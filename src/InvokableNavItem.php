@@ -6,6 +6,7 @@ namespace Rushing\DataNav;
 
 use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
  * The dynamic nav node that knows what to invoke — a node which declares a
@@ -19,6 +20,7 @@ use Spatie\LaravelData\Attributes\DataCollectionOf;
  * A versioned schema (`nav/invokable-item`, v1) via {@see SchemaIdentity}, so a
  * mixed tree of {@see NavLink} and this kind is a discriminable union.
  */
+#[TypeScript]
 class InvokableNavItem extends NavNode implements SchemaIdentity
 {
     /**
