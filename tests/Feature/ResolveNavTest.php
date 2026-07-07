@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Http\Request;
 use Rushing\DataNav\Nav;
 use Rushing\DataNav\NavLink;

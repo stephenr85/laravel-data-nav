@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rushing\DataNav;
 
 use Illuminate\Container\Container;
@@ -14,7 +12,7 @@ use Rushing\Popcorn\InvocableRegistry;
  * the transport array. Hydrates the path, dispatches through the shared
  * {@see InvocableRegistry}, and rehydrates a {@see NavTree}.
  */
-final class Nav
+class Nav
 {
     public static function resolve(NavTree $tree, ?Request $request = null): NavTree
     {

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rushing\DataNav;
 
 use Illuminate\Support\Str;
@@ -14,7 +12,7 @@ use Rushing\DataNav\Contracts\NavMatcher;
  * `href` must equal the path exactly. Paths and patterns are slash-normalized so
  * `/blog`, `blog`, and `blog/` compare equal.
  */
-final class PathNavMatcher implements NavMatcher
+class PathNavMatcher implements NavMatcher
 {
     public function matches(NavItem $item, string $path): bool
     {

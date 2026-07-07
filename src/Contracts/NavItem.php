@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rushing\DataNav\Contracts;
 
 use Rushing\DataNav\InvokableNavItem;

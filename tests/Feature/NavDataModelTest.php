@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Rushing\DataNav\Contracts\NavItem;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavTree;

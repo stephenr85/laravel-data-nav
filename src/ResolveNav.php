@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Rushing\DataNav;
 
 use Rushing\DataNav\Contracts\NavMatcher;
@@ -23,11 +21,11 @@ use Rushing\Popcorn\InvocableRegistry;
  * this resolver — `{ items: array }` — and an unknown invocable name degrades to
  * empty children, never an error.
  */
-final class ResolveNav implements Invocable
+class ResolveNav implements Invocable
 {
     public function __construct(
-        private readonly NavMatcher $matcher,
-        private readonly InvocableRegistry $registry,
+        private NavMatcher $matcher,
+        private InvocableRegistry $registry,
     ) {}
 
     public function name(): string
