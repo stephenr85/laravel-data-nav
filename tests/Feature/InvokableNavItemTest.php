@@ -4,7 +4,7 @@ use Rushing\DataNav\Contracts\NavItem;
 use Rushing\DataNav\InvokableNavItem;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavTree;
-use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
+use Schemastud\DataSchemas\Contracts\SchemaIdentity;
 use Rushing\Popcorn\InvocableRegistry;
 use Rushing\Popcorn\Invocables\LocalInvocable;
 

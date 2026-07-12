@@ -3,7 +3,7 @@
 use Rushing\DataNav\Contracts\NavItem;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavTree;
-use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
+use Schemastud\DataSchemas\Contracts\SchemaIdentity;
 
 it('exposes stable schema identity on the node kinds and the tree', function () {
     expect(NavLink::schemaName())->toBe('nav/link')

@@ -2,7 +2,7 @@
 
 namespace Rushing\DataNav;
 
-use Rushing\LaravelDataSchemas\Contracts\SchemaIdentity;
+use Schemastud\DataSchemas\Contracts\SchemaIdentity;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 /**
