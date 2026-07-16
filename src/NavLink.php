@@ -28,6 +28,8 @@ class NavLink extends NavNode implements SchemaIdentity
         ?string $href = null,
         ?string $match = null,
         array $children = [],
+        ?string $icon = null,
+        ?string $routeName = null,
     ): self {
         return new self(
             kind: 'nav/link',
@@ -35,6 +37,8 @@ class NavLink extends NavNode implements SchemaIdentity
             href: $href,
             match: $match,
             children: $children,
+            icon: $icon,
+            routeName: $routeName,
         );
     }
 

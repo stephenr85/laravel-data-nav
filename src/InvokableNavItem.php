@@ -35,6 +35,8 @@ class InvokableNavItem extends NavNode implements SchemaIdentity
         array $children = [],
         bool $active = false,
         bool $activeTrail = false,
+        ?string $icon = null,
+        ?string $routeName = null,
     ) {
         parent::__construct(
             kind: 'nav/invokable-item',
@@ -44,6 +46,8 @@ class InvokableNavItem extends NavNode implements SchemaIdentity
             children: $children,
             active: $active,
             activeTrail: $activeTrail,
+            icon: $icon,
+            routeName: $routeName,
         );
     }
 
@@ -58,6 +62,8 @@ class InvokableNavItem extends NavNode implements SchemaIdentity
         array $input = [],
         ?string $href = null,
         ?string $match = null,
+        ?string $icon = null,
+        ?string $routeName = null,
     ): self {
         return new self(
             title: $title,
@@ -65,6 +71,8 @@ class InvokableNavItem extends NavNode implements SchemaIdentity
             input: $input,
             href: $href,
             match: $match,
+            icon: $icon,
+            routeName: $routeName,
         );
     }
 

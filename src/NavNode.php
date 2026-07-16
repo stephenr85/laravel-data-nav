@@ -2,8 +2,8 @@
 
 namespace Rushing\DataNav;
 
+use Illuminate\Container\Container;
 use Rushing\DataNav\Contracts\NavItem;
-use Schemastud\DataSchemas\Contracts\SchemaIdentity;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\PropertyForMorph;
 use Spatie\LaravelData\Contracts\PropertyMorphableData;
@@ -38,17 +38,42 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
         public array $children = [],
         public bool $active = false,
         public bool $activeTrail = false,
+        /**
+         * A decorative icon name (e.g. `'Library'`), not a component — the host
+         * renderer maps the name to its own icon. A universal optional field, not
+         * a new kind. Nullable so existing nodes are unaffected.
+         */
+        public ?string $icon = null,
+        /**
+         * The stable route identity a host binds this node to (the join key
+         * across a route table, the nav, and a client route registry). Nullable;
+         * active-state may match on it instead of a path glob.
+         */
+        public ?string $routeName = null,
     ) {}
 
     /**
-     * Map the `kind` discriminator to the concrete node class. An unknown kind
-     * returns null, letting spatie fall back to its default hydration.
+     * Map the `kind` discriminator to the concrete node class through the shared
+     * {@see NavKindRegistry}, so host-registered kinds are hydration-safe. An
+     * unknown kind returns null, letting spatie fall back to its default
+     * hydration (unchanged behavior). Resolved through the container so the
+     * static morph seam can reach the bound registry; degrades to the two
+     * built-in kinds when the container is unavailable (e.g. bare unit use).
      *
      * @param  array<string, mixed>  $properties
      */
     public static function morph(array $properties): ?string
     {
-        return match ($properties['kind'] ?? null) {
+        $kind = $properties['kind'] ?? null;
+        $kind = is_string($kind) ? $kind : null;
+
+        $container = Container::getInstance();
+
+        if ($container->bound(NavKindRegistry::class)) {
+            return $container->make(NavKindRegistry::class)->resolve($kind);
+        }
+
+        return match ($kind) {
             'nav/link' => NavLink::class,
             'nav/invokable-item' => InvokableNavItem::class,
             default => null,

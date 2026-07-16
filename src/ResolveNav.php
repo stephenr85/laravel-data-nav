@@ -2,10 +2,10 @@
 
 namespace Rushing\DataNav;
 
+use Rushing\DataNav\Contracts\NavExpander;
 use Rushing\DataNav\Contracts\NavMatcher;
 use Rushing\Popcorn\Binding;
 use Rushing\Popcorn\Contracts\Invocable;
-use Rushing\Popcorn\InvocableRegistry;
 
 /**
  * Active-state resolution as a transport-agnostic popcorn capability — the
@@ -25,7 +25,7 @@ class ResolveNav implements Invocable
 {
     public function __construct(
         private NavMatcher $matcher,
-        private InvocableRegistry $registry,
+        private NavExpander $expander,
     ) {}
 
     public function name(): string
@@ -66,7 +66,7 @@ class ResolveNav implements Invocable
     {
         $children = array_map(
             fn (NavNode $child): NavNode => $this->stamp($child, $path),
-            $this->childrenOf($node, $path),
+            $this->expander->expand($node),
         );
 
         $active = $this->matcher->matches($node, $path);
@@ -80,44 +80,5 @@ class ResolveNav implements Invocable
         }
 
         return $node->stamped($active, $activeTrail, $children);
-    }
-
-    /**
-     * The children to walk. A static node yields its held children; an
-     * invocable-backed node builds its children on demand by dispatching its
-     * capability. Expansion is recursive by construction — an expanded child may
-     * itself be invocable-backed and is walked in turn.
-     *
-     * @return array<int, NavNode>
-     */
-    private function childrenOf(NavNode $node, string $path): array
-    {
-        if ($node instanceof InvokableNavItem) {
-            return $this->expand($node);
-        }
-
-        return $node->children();
-    }
-
-    /**
-     * Dispatch the node's capability and hydrate the returned nodes. An
-     * unregistered name degrades to empty children (safe), never an error.
-     *
-     * @return array<int, NavNode>
-     */
-    private function expand(InvokableNavItem $node): array
-    {
-        if (! $this->registry->has($node->invocable)) {
-            return [];
-        }
-
-        $output = $this->registry->invoke($node->invocable, $node->input);
-
-        $items = is_array($output['items'] ?? null) ? $output['items'] : [];
-
-        return array_values(array_map(
-            fn (mixed $item): NavNode => $item instanceof NavNode ? $item : NavNode::from($item),
-            $items,
-        ));
     }
 }
