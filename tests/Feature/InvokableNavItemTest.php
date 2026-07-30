@@ -4,9 +4,9 @@ use Rushing\DataNav\Contracts\NavItem;
 use Rushing\DataNav\InvokableNavItem;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavTree;
-use Schemastud\DataSchemas\Contracts\SchemaIdentity;
 use Rushing\Popcorn\InvocableRegistry;
 use Rushing\Popcorn\Invocables\LocalInvocable;
+use Schemastud\DataSchemas\Contracts\SchemaIdentity;
 
 it('is a SchemaIdentity NavItem carrying an invocable name and input', function () {
     $item = InvokableNavItem::make(

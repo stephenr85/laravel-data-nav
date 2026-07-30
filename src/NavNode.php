@@ -5,6 +5,7 @@ namespace Rushing\DataNav;
 use Illuminate\Container\Container;
 use Rushing\DataNav\Contracts\NavItem;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\Attributes\Hidden;
 use Spatie\LaravelData\Attributes\PropertyForMorph;
 use Spatie\LaravelData\Contracts\PropertyMorphableData;
 use Spatie\LaravelData\Data;
@@ -50,7 +51,38 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
          * active-state may match on it instead of a path glob.
          */
         public ?string $routeName = null,
+        /**
+         * A server-only, opaque gate-meta bag — the host stashes its own gating
+         * tokens here (e.g. `entitlement`, `permission`) for the injected
+         * {@see NavGate} pipeline to read. `#[Hidden]` keeps it
+         * **build-time only**: it never appears in `toArray()` / `toJson()`
+         * output, so no host gating vocabulary leaks to the client (ADR-0119).
+         * A node with no meta always passes the gate; a rehydrated node arrives
+         * with empty meta (the wire never carried it). The package itself never
+         * interprets these keys — it only holds and hands them to the stages.
+         *
+         * @var array<string, mixed>
+         */
+        #[Hidden]
+        public array $meta = [],
     ) {}
+
+    /**
+     * A copy of this node carrying the given opaque gate-meta — the ergonomic
+     * seam a host uses to attach its gating tokens without naming `meta` in a
+     * factory signature (e.g. `NavLink::make(...)->withMeta(['entitlement' =>
+     * [...]])`). Clones so the source node is unchanged; the meta stays
+     * server-only (see the `#[Hidden]` property above).
+     *
+     * @param  array<string, mixed>  $meta
+     */
+    public function withMeta(array $meta): static
+    {
+        $clone = clone $this;
+        $clone->meta = $meta;
+
+        return $clone;
+    }
 
     /**
      * Map the `kind` discriminator to the concrete node class through the shared

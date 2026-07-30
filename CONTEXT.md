@@ -50,3 +50,38 @@ _Avoid_: Highlighter.
 The chain of ancestor nodes leading to the active leaf — what a parent section highlights on even
 when the active item is a descendant.
 _Avoid_: breadcrumb (that's a separate ordered path), open path.
+
+**NavRegistry**:
+The keyed registry of named navigations — `register(key, factory)` / `build(key, NavContext)`. A host
+registers named nav factories (`'tenant'`, `'admin'`, a footer, a mobile menu) and asks the registry to
+build one against a context; a realm/region is just a key. `build()` runs one pipeline — **gate/omit →
+expand → gate contributed children → stamp** — reusing the existing walk (`NavExpander` / `ResolveNav`)
+and adding only the omit phase: a gated-out node is dropped *before* its children are expanded, so a
+hidden node never pays to build its subtree. Stamping reuses `ResolveNav` with a `StaticNavExpander`
+(the tree is already expanded once, with live context — it must not be re-expanded). The one host-free
+model shift behind it: **there is no "section"** — gating and contribution are properties of *nodes* at
+any depth, so contribution reuses the existing `InvokableNavItem` / `NavExpander` seam.
+_Avoid_: NavBuilder (it composes existing seams, it is not a monolithic builder), Menu manager.
+
+**NavGate / NavGateStage**:
+The injected omit pipeline — the package's *mechanism*, the host's *policy*. `NavGate` holds ordered
+`NavGateStage`s (`allows(node, context): bool`), ANDs them, and short-circuits on the first deny;
+**bound empty by default** (no stages ⇒ everything visible). The package names no host concept — a stage
+reads whatever it needs off the node's opaque gate-**meta** and off `NavContext`. Secure-by-omission: a
+denied node is dropped, never rendered-disabled.
+_Avoid_: NavPolicy / NavGuard (the package holds no policy — the host's stages do), middleware.
+
+**NavContext**:
+The minimal, host-vocabulary-free build context threaded through a build — the authenticated user, the
+request, and an opaque `attributes` bag the host stashes its own context into (e.g. the current tenant).
+Passed to gate stages; also bound into the container for the length of a `build()` so a host expander /
+capability can resolve it (the `NavExpander` contract carries no context param).
+_Avoid_: RequestContext (it is not the HTTP request; it wraps one), NavState.
+
+**Gate-meta**:
+An opaque, server-only `#[Hidden]` bag on `NavNode` (`withMeta([...])`) the host stashes its gating
+tokens into for the `NavGate` stages to read. Build-time only — it never appears in `toArray()` /
+`toJson()`, so no host gating vocabulary leaks to the client, and a rehydrated node arrives with empty
+meta. A node with no meta always passes the gate. The package holds and hands these keys; it never
+interprets them.
+_Avoid_: attributes (that's `NavContext`'s host bag; gate-meta rides the *node*), props.

@@ -28,6 +28,17 @@ class ServiceProvider extends PackageServiceProvider
         // registers additional kinds so its custom nodes survive the morph
         // round-trip. Singleton so registrations persist for the request.
         $this->app->singleton(NavKindRegistry::class);
+
+        // The gate pipeline, bound EMPTY by default — no stages means every node
+        // passes (today's everything-visible behavior). A host resolves this
+        // singleton and pushes its ordered stages (e.g. entitlement, then
+        // permission) so the same instance backs both registration and build.
+        $this->app->singleton(NavGate::class);
+
+        // The keyed registry of named navigations — a singleton the host
+        // populates with its navigation factories (e.g. `tenant`, `admin`). It
+        // composes the gate, the bound expander, and the bound matcher.
+        $this->app->singleton(NavRegistry::class);
     }
 
     public function packageBooted(): void
