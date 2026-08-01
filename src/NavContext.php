@@ -23,9 +23,9 @@ class NavContext
      * @param  array<string, mixed>  $attributes  an opaque host-context bag (e.g. `['tenant' => $tenant]`)
      */
     public function __construct(
-        public readonly ?Authenticatable $user = null,
-        public readonly ?Request $request = null,
-        public readonly array $attributes = [],
+        public ?Authenticatable $user = null,
+        public ?Request $request = null,
+        public array $attributes = [],
     ) {}
 
     /**
