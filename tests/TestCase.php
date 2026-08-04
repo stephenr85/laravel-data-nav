@@ -4,7 +4,7 @@ namespace Rushing\DataNav\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
 use Rushing\DataNav\ServiceProvider;
-use Rushing\Popcorn\PopcornServiceProvider;
+use Rushing\Popcorn\Laravel\PopcornServiceProvider;
 use Spatie\LaravelData\LaravelDataServiceProvider;
 
 abstract class TestCase extends Orchestra
