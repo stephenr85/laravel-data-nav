@@ -65,7 +65,29 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
          */
         #[Hidden]
         public array $meta = [],
+        /**
+         * The wire-visible soft-lock projection (Frame OS ticket 11). Unlike `$meta`, this is
+         * **serialized** — a non-null value keeps the node present-but-locked in `toArray()` /
+         * `toJson()` output, carrying a `reason` + an opaque `upsell` token for the client to render
+         * an upgrade CTA. Null (the default) = not locked, so existing nodes are unaffected. Beam's
+         * projection (ticket 08) sets this for a soft-gated node; a hard-gated node is omitted
+         * entirely (never reaches this state). See {@see locked()}.
+         */
+        public ?NavLocked $locked = null,
     ) {}
+
+    /**
+     * A copy of this node marked present-but-locked with the given reason + opaque upsell token —
+     * the soft-gate seam. Clones so the source node is unchanged; unlike `withMeta()`, the lock is
+     * serialized so the client can render a locked launcher/nav entry with an upsell (ticket 11).
+     */
+    public function locked(string $reason, ?string $upsell = null): static
+    {
+        $clone = clone $this;
+        $clone->locked = new NavLocked(reason: $reason, upsell: $upsell);
+
+        return $clone;
+    }
 
     /**
      * A copy of this node carrying the given opaque gate-meta — the ergonomic
