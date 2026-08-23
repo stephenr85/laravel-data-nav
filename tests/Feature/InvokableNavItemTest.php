@@ -42,7 +42,7 @@ it('round-trips a mixed tree as a discriminable union of node kinds', function (
 
 it('builds its own children on resolve and stamps active-state over the expansion', function () {
     app(InvocableRegistry::class)->register(new LocalInvocable(
-        'test/topics',
+        'test.topics',
         fn (array $input): array => ['items' => [
             NavLink::make(title: 'Alpha', href: '/topics/alpha')->toArray(),
             NavLink::make(title: 'Beta', href: '/topics/beta')->toArray(),
@@ -50,7 +50,7 @@ it('builds its own children on resolve and stamps active-state over the expansio
     ));
 
     $tree = NavTree::make([
-        InvokableNavItem::make(title: 'Topics', invocable: 'test/topics'),
+        InvokableNavItem::make(title: 'Topics', invocable: 'test.topics'),
     ]);
 
     $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
@@ -72,14 +72,14 @@ it('builds its own children on resolve and stamps active-state over the expansio
 it('expands recursively when a built child is itself invocable-backed', function () {
     $registry = app(InvocableRegistry::class);
 
-    $registry->register(new LocalInvocable('test/outer', fn (array $input): array => ['items' => [
-        InvokableNavItem::make(title: 'Inner', invocable: 'test/inner')->toArray(),
+    $registry->register(new LocalInvocable('test.outer', fn (array $input): array => ['items' => [
+        InvokableNavItem::make(title: 'Inner', invocable: 'test.inner')->toArray(),
     ]]));
-    $registry->register(new LocalInvocable('test/inner', fn (array $input): array => ['items' => [
+    $registry->register(new LocalInvocable('test.inner', fn (array $input): array => ['items' => [
         NavLink::make(title: 'Leaf', href: '/leaf')->toArray(),
     ]]));
 
-    $tree = NavTree::make([InvokableNavItem::make(title: 'Outer', invocable: 'test/outer')]);
+    $tree = NavTree::make([InvokableNavItem::make(title: 'Outer', invocable: 'test.outer')]);
 
     $output = $registry->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
@@ -97,7 +97,26 @@ it('expands recursively when a built child is itself invocable-backed', function
 
 it('degrades an unknown invocable name to empty children, not an error', function () {
     $tree = NavTree::make([
-        InvokableNavItem::make(title: 'Ghost', invocable: 'no/such-capability'),
+        InvokableNavItem::make(title: 'Ghost', invocable: 'no.such-capability'),
+    ]);
+
+    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
+        'tree' => $tree->toArray(),
+        'path' => 'anywhere',
+    ]);
+
+    $resolved = NavTree::from($output['tree']);
+
+    expect($resolved->items[0])->toBeInstanceOf(InvokableNavItem::class)
+        ->and($resolved->items[0]->children())->toBe([]);
+});
+
+it('degrades an UNPARSEABLE invocable name the same way, because a tree is data', function () {
+    // A name that is not merely unregistered but illegal as a registry key — the shape a host's
+    // hand-written JSON produces. It must land as an absent capability, not as an InvalidRegistryKey
+    // blaming a developer in another package.
+    $tree = NavTree::make([
+        InvokableNavItem::make(title: 'Ghost', invocable: 'Not/A Key'),
     ]);
 
     $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [

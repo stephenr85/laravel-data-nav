@@ -4,6 +4,7 @@ namespace Rushing\DataNav;
 
 use Rushing\DataNav\Contracts\NavExpander;
 use Rushing\Popcorn\InvocableRegistry;
+use Rushing\Popcorn\Registries\Exceptions\RegistryMiss;
 
 /**
  * The default {@see NavExpander} — the behavior that used to live inline in
@@ -27,11 +28,16 @@ class InvokableNavExpander implements NavExpander
             return $node->children();
         }
 
-        if (! $this->registry->has($node->invocable)) {
+        // `invocable` arrives from a hydrated tree, i.e. it is a NAME and not a key — a host's JSON
+        // can carry a typo that is not merely unregistered but unparseable. `has()` is a contract
+        // method and throws on an illegal key by design (popcorn ticket 30 D4); `invoke()` is the
+        // name-taking door that reports an illegal name as an absent one. Going through the miss is
+        // what keeps this expander's promise that an unresolvable name degrades rather than errors.
+        try {
+            $output = $this->registry->invoke($node->invocable, $node->input);
+        } catch (RegistryMiss) {
             return [];
         }
-
-        $output = $this->registry->invoke($node->invocable, $node->input);
 
         $items = is_array($output['items'] ?? null) ? $output['items'] : [];
 
