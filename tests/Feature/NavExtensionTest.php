@@ -3,13 +3,13 @@
 use Rushing\DataNav\Contracts\NavExpander;
 use Rushing\DataNav\InvokableNavExpander;
 use Rushing\DataNav\InvokableNavItem;
+use Rushing\DataNav\NavInvocableRegistry;
 use Rushing\DataNav\NavKindRegistry;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavNode;
 use Rushing\DataNav\NavTree;
 use Rushing\DataNav\PathNavMatcher;
 use Rushing\DataNav\ResolveNav;
-use Rushing\Popcorn\InvocableRegistry;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 
 /**
@@ -104,7 +104,7 @@ it('resolves active-state over a host kind once it is registered', function () {
         new HostBadgeNavItem(title: 'Inbox', badge: '3', href: '/inbox'),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
+    $output = app(NavInvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'inbox',
     ]);

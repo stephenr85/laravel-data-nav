@@ -3,20 +3,19 @@
 namespace Rushing\DataNav;
 
 use Rushing\DataNav\Contracts\NavExpander;
-use Rushing\Popcorn\InvocableRegistry;
 use Rushing\Popcorn\Registries\Exceptions\RegistryMiss;
 
 /**
  * The default {@see NavExpander} — the behavior that used to live inline in
  * {@see ResolveNav}. An {@see InvokableNavItem} builds its children on demand by
- * dispatching its named popcorn capability through the shared
- * {@see InvocableRegistry}; an unregistered name degrades to empty children
+ * dispatching its named popcorn capability through data-nav's own
+ * {@see NavInvocableRegistry}; an unregistered name degrades to empty children
  * (safe), never an error. Any other node yields its eagerly-held children.
  */
 class InvokableNavExpander implements NavExpander
 {
     public function __construct(
-        private InvocableRegistry $registry,
+        private NavInvocableRegistry $registry,
     ) {}
 
     /**

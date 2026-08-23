@@ -2,9 +2,9 @@
 
 use Rushing\DataNav\Contracts\NavItem;
 use Rushing\DataNav\InvokableNavItem;
+use Rushing\DataNav\NavInvocableRegistry;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavTree;
-use Rushing\Popcorn\InvocableRegistry;
 use Rushing\Popcorn\Invocables\LocalInvocable;
 use Schemastud\DataSchemas\Contracts\SchemaIdentity;
 
@@ -41,7 +41,7 @@ it('round-trips a mixed tree as a discriminable union of node kinds', function (
 });
 
 it('builds its own children on resolve and stamps active-state over the expansion', function () {
-    app(InvocableRegistry::class)->register(new LocalInvocable(
+    app(NavInvocableRegistry::class)->register(new LocalInvocable(
         'test.topics',
         fn (array $input): array => ['items' => [
             NavLink::make(title: 'Alpha', href: '/topics/alpha')->toArray(),
@@ -53,7 +53,7 @@ it('builds its own children on resolve and stamps active-state over the expansio
         InvokableNavItem::make(title: 'Topics', invocable: 'test.topics'),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
+    $output = app(NavInvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'topics/alpha',
     ]);
@@ -70,7 +70,7 @@ it('builds its own children on resolve and stamps active-state over the expansio
 });
 
 it('expands recursively when a built child is itself invocable-backed', function () {
-    $registry = app(InvocableRegistry::class);
+    $registry = app(NavInvocableRegistry::class);
 
     $registry->register(new LocalInvocable('test.outer', fn (array $input): array => ['items' => [
         InvokableNavItem::make(title: 'Inner', invocable: 'test.inner')->toArray(),
@@ -100,7 +100,7 @@ it('degrades an unknown invocable name to empty children, not an error', functio
         InvokableNavItem::make(title: 'Ghost', invocable: 'no.such-capability'),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
+    $output = app(NavInvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'anywhere',
     ]);
@@ -119,7 +119,7 @@ it('degrades an UNPARSEABLE invocable name the same way, because a tree is data'
         InvokableNavItem::make(title: 'Ghost', invocable: 'Not/A Key'),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
+    $output = app(NavInvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'anywhere',
     ]);

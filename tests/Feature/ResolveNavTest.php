@@ -2,12 +2,12 @@
 
 use Illuminate\Http\Request;
 use Rushing\DataNav\Nav;
+use Rushing\DataNav\NavInvocableRegistry;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavTree;
 use Rushing\DataNav\PathNavMatcher;
 use Rushing\DataNav\ResolveNav;
 use Rushing\Popcorn\Binding;
-use Rushing\Popcorn\InvocableRegistry;
 
 it('matches a glob pattern, falls back to exact href, and rejects non-matches', function () {
     $matcher = new PathNavMatcher;
@@ -25,7 +25,7 @@ it('matches a glob pattern, falls back to exact href, and rejects non-matches', 
 });
 
 it('is registered as a local invocable named data-nav.resolve', function () {
-    $registry = app(InvocableRegistry::class);
+    $registry = app(NavInvocableRegistry::class);
 
     expect($registry->has('data-nav.resolve'))->toBeTrue();
 
@@ -43,7 +43,7 @@ it('stamps active on the matching leaf and activeTrail on its ancestors via the 
         ]),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
+    $output = app(NavInvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'products/widgets',
     ]);

@@ -4,7 +4,7 @@ namespace Rushing\DataNav;
 
 use Rushing\DataNav\Contracts\NavExpander;
 use Rushing\DataNav\Contracts\NavMatcher;
-use Rushing\Popcorn\InvocableRegistry;
+use Rushing\Popcorn\Registries\RegistryIndex;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -39,12 +39,20 @@ class ServiceProvider extends PackageServiceProvider
         // populates with its navigation factories (e.g. `tenant`, `admin`). It
         // composes the gate, the bound expander, and the bound matcher.
         $this->app->singleton(NavRegistry::class);
+
+        // data-nav's own branch of the keyspace. It replaces a write into the estate-wide
+        // InvocableRegistry singleton: `data-nav.resolve` was pooled with every other package's
+        // capabilities, and is owned now (registry-kernel ticket 40).
+        $this->app->singleton(NavInvocableRegistry::class);
     }
 
     public function packageBooted(): void
     {
-        $this->app->make(InvocableRegistry::class)->register(
+        $registry = $this->app->make(NavInvocableRegistry::class)->register(
             $this->app->make(ResolveNav::class),
         );
+
+        // An owner registers DOWN into the index from its own boot; the index never reaches up.
+        $this->app->make(RegistryIndex::class)->describe($registry);
     }
 }
