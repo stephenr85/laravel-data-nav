@@ -2,7 +2,7 @@
 
 > Refined by [ADR-0002](0002-polymorphic-nav-interface-and-popcorn-resolution.md): `NavItem`
 > became an interface with `SchemaIdentity` DTO kinds (`NavLink`, `InvokableNavItem`), and the
-> `NavResolver` service became the `data-nav/resolve` popcorn invocable. The framework-agnostic,
+> `NavResolver` service became the `data-nav.resolve` popcorn invocable. The framework-agnostic,
 > serializable, no-HTML, own-leaf-package decision below still stands.
 
 Every app in the family needs navigation, across render stacks (React/Inertia for numero and the

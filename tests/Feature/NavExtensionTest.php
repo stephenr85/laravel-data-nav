@@ -104,7 +104,7 @@ it('resolves active-state over a host kind once it is registered', function () {
         new HostBadgeNavItem(title: 'Inbox', badge: '3', href: '/inbox'),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav/resolve', [
+    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'inbox',
     ]);

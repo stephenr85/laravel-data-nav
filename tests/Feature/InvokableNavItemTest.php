@@ -53,7 +53,7 @@ it('builds its own children on resolve and stamps active-state over the expansio
         InvokableNavItem::make(title: 'Topics', invocable: 'test/topics'),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav/resolve', [
+    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'topics/alpha',
     ]);
@@ -81,7 +81,7 @@ it('expands recursively when a built child is itself invocable-backed', function
 
     $tree = NavTree::make([InvokableNavItem::make(title: 'Outer', invocable: 'test/outer')]);
 
-    $output = $registry->invoke('data-nav/resolve', [
+    $output = $registry->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'leaf',
     ]);
@@ -100,7 +100,7 @@ it('degrades an unknown invocable name to empty children, not an error', functio
         InvokableNavItem::make(title: 'Ghost', invocable: 'no/such-capability'),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav/resolve', [
+    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'anywhere',
     ]);

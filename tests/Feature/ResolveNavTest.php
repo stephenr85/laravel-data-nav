@@ -24,13 +24,13 @@ it('matches a glob pattern, falls back to exact href, and rejects non-matches', 
     expect($matcher->matches($parent, 'section'))->toBeFalse();
 });
 
-it('is registered as a local invocable named data-nav/resolve', function () {
+it('is registered as a local invocable named data-nav.resolve', function () {
     $registry = app(InvocableRegistry::class);
 
-    expect($registry->has('data-nav/resolve'))->toBeTrue();
+    expect($registry->has('data-nav.resolve'))->toBeTrue();
 
     $resolve = app(ResolveNav::class);
-    expect($resolve->name())->toBe('data-nav/resolve')
+    expect($resolve->name())->toBe('data-nav.resolve')
         ->and($resolve->binding())->toBe(Binding::Local);
 });
 
@@ -43,7 +43,7 @@ it('stamps active on the matching leaf and activeTrail on its ancestors via the 
         ]),
     ]);
 
-    $output = app(InvocableRegistry::class)->invoke('data-nav/resolve', [
+    $output = app(InvocableRegistry::class)->invoke('data-nav.resolve', [
         'tree' => $tree->toArray(),
         'path' => 'products/widgets',
     ]);

@@ -33,7 +33,7 @@ subtrees (schema `nav/tree`).
 _Avoid_: Menu, Navbar.
 
 **ResolveNav**:
-The `data-nav/resolve` popcorn invocable (Local binding) that walks a `NavTree` once — **expands**
+The `data-nav.resolve` popcorn invocable (Local binding) that walks a `NavTree` once — **expands**
 each invocable-backed node via the shared `InvocableRegistry`, then **stamps** each node's `active`
 and `activeTrail` server-side against the current path — the canonical active-state answer.
 Clients prefer the stamped flags; client URL-matching is only a fallback. `Nav::resolve()` is the

@@ -16,7 +16,7 @@ left no room for a menu that builds itself.
 - `InvokableNavItem` **knows what to invoke**: it holds a registered popcorn invocable name (+
   optional input) and declares a subtree it does not eagerly hold. This is how a self-building
   menu (e.g. Topics) is expressed — the item defers its subtree to a capability.
-- Active-state resolution is the **`data-nav/resolve` popcorn invocable** (Local binding),
+- Active-state resolution is the **`data-nav.resolve` popcorn invocable** (Local binding),
   `{ tree, path } → { tree }`: it expands each `InvokableNavItem` via the shared
   `InvocableRegistry` (recursively) then stamps `active` / `activeTrail` through a pluggable
   `NavMatcher` (default `PathNavMatcher`: `match` glob, else exact `href`). An unknown invocable

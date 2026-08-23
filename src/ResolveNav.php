@@ -30,7 +30,7 @@ class ResolveNav implements Invocable
 
     public function name(): string
     {
-        return 'data-nav/resolve';
+        return 'data-nav.resolve';
     }
 
     public function binding(): Binding
