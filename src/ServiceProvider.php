@@ -53,6 +53,13 @@ class ServiceProvider extends PackageServiceProvider
         );
 
         // An owner registers DOWN into the index from its own boot; the index never reaches up.
-        $this->app->make(RegistryIndex::class)->describe($registry);
+        $index = $this->app->make(RegistryIndex::class);
+        $index->describe($registry);
+
+        // `data-nav.navigations` — the keyed navigations, a branch beside the capabilities. Described
+        // after the capability root so the index reads foundation-first (registry-kernel ticket 38).
+        // Nothing fills this from here: the HOST registers its navigations, and it does so after this
+        // boot, so describing an empty registry is the correct and expected state.
+        $index->describe($this->app->make(NavRegistry::class), by: self::class);
     }
 }

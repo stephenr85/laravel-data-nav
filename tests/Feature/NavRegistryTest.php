@@ -10,6 +10,7 @@ use Rushing\DataNav\NavGate;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavNode;
 use Rushing\DataNav\NavRegistry;
+use Rushing\Popcorn\Registries\Exceptions\RegistryMiss;
 
 // Ticket 03: the keyed registry of named navigations. build() runs
 // gate/omit → expand → gate contributed children → stamp, reusing the existing
@@ -46,8 +47,9 @@ function spyExpander(array &$expanded): NavExpander
 it('throws a clear error for an unknown key', function () {
     $registry = app(NavRegistry::class);
 
-    expect(fn () => $registry->build('nope', new NavContext))
-        ->toThrow(InvalidArgumentException::class, 'Unknown navigation [nope].');
+    // Conforming moved the miss from a package-local InvalidArgumentException to the kernel's
+    // RegistryMiss (a RuntimeException) — registry-kernel ticket 38.
+    expect(fn () => $registry->build('nope', new NavContext))->toThrow(RegistryMiss::class);
 });
 
 it('omits a gated-out node BEFORE expansion — its expander is never invoked', function () {
