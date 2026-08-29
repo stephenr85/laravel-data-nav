@@ -61,5 +61,10 @@ class ServiceProvider extends PackageServiceProvider
         // Nothing fills this from here: the HOST registers its navigations, and it does so after this
         // boot, so describing an empty registry is the correct and expected state.
         $index->describe($this->app->make(NavRegistry::class), by: self::class);
+
+        // `data-nav.kinds` — the node-kind discriminators. Unlike the branch above this one is NEVER
+        // empty: the two package built-ins seed at construction, so what the index shows here is the
+        // package's own contribution plus whatever the host adds later.
+        $index->describe($this->app->make(NavKindRegistry::class), by: self::class);
     }
 }

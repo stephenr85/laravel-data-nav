@@ -124,7 +124,10 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
         $container = Container::getInstance();
 
         if ($container->bound(NavKindRegistry::class)) {
-            return $container->make(NavKindRegistry::class)->resolve($kind);
+            // `classFor()`, not `resolve()`: the registry declared itself in the popcorn kernel, where
+            // `resolve()` THROWS on a miss. Null is the contract spatie needs here — it means "fall back
+            // to default hydration" — so the old meaning kept its behaviour and lost its name.
+            return $container->make(NavKindRegistry::class)->classFor($kind);
         }
 
         return match ($kind) {
