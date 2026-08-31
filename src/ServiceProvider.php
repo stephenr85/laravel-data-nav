@@ -4,7 +4,6 @@ namespace Rushing\DataNav;
 
 use Rushing\DataNav\Contracts\NavExpander;
 use Rushing\DataNav\Contracts\NavMatcher;
-use Rushing\Popcorn\Registries\RegistryIndex;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -52,19 +51,5 @@ class ServiceProvider extends PackageServiceProvider
             $this->app->make(ResolveNav::class),
         );
 
-        // An owner registers DOWN into the index from its own boot; the index never reaches up.
-        $index = $this->app->make(RegistryIndex::class);
-        $index->describe($registry);
-
-        // `data-nav.navigations` — the keyed navigations, a branch beside the capabilities. Described
-        // after the capability root so the index reads foundation-first (registry-kernel ticket 38).
-        // Nothing fills this from here: the HOST registers its navigations, and it does so after this
-        // boot, so describing an empty registry is the correct and expected state.
-        $index->describe($this->app->make(NavRegistry::class), by: self::class);
-
-        // `data-nav.kinds` — the node-kind discriminators. Unlike the branch above this one is NEVER
-        // empty: the two package built-ins seed at construction, so what the index shows here is the
-        // package's own contribution plus whatever the host adds later.
-        $index->describe($this->app->make(NavKindRegistry::class), by: self::class);
     }
 }
