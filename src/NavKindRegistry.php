@@ -2,7 +2,9 @@
 
 namespace Rushing\DataNav;
 
+use Rushing\Popcorn\Registries\Authorizer;
 use Rushing\Popcorn\Registries\BasicRegistry;
+use Rushing\Popcorn\Registries\Gated;
 use Rushing\Popcorn\Registries\IsRegistry;
 use Rushing\Popcorn\Registries\OnDuplicate;
 use Rushing\Popcorn\Registries\Optionality;
@@ -58,7 +60,7 @@ use Rushing\Popcorn\Registries\RelativeUriKey;
 /**
  * @implements Registry<class-string<NavNode>>
  */
-class NavKindRegistry implements Registry
+class NavKindRegistry implements Gated, Registry
 {
     /**
      * The kinds this package ships, seeded at construction so a host that registers nothing still
@@ -171,5 +173,12 @@ class NavKindRegistry implements Registry
     public function unfiltered(): Registry
     {
         return $this->kinds->unfiltered();
+    }
+
+    public function authorizeWith(?Authorizer $authorizer): static
+    {
+        $this->kinds->authorizeWith($authorizer);
+
+        return $this;
     }
 }
