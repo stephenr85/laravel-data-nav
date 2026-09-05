@@ -11,7 +11,7 @@ use Rushing\Popcorn\Contracts\Invocable;
  * Active-state resolution as a transport-agnostic popcorn capability — the
  * family shape that replaces the old monolithic URL highlighter. Given a
  * serialized tree and the current path, it walks the tree once, **expands** any
- * invocable-backed node (an {@see InvokableNavItem} builds its own children by
+ * invocable-backed node (an {@see InvocableNavItem} builds its own children by
  * dispatching its named capability through {@see NavInvocableRegistry}),
  * then stamps `active` on each matching node and `activeTrail` on every ancestor
  * of an active descendant, using the bound {@see NavMatcher}.

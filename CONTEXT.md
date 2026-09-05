@@ -19,10 +19,10 @@ The static node kind — the common case: a titled link with an optional match p
 eagerly-held children (schema `nav/link`).
 _Avoid_: MenuLink.
 
-**InvokableNavItem**:
+**InvocableNavItem**:
 The dynamic node kind that _knows what to invoke_ — it declares a subtree it does not eagerly
 hold, carrying a registered popcorn invocable name (+ optional input); resolution dispatches that
-capability to build its children on demand (schema `nav/invokable-item`). The mechanism behind a
+capability to build its children on demand (schema `nav/invocable-item`). The mechanism behind a
 self-building menu (e.g. a Topics submenu projected from a category tree).
 _Avoid_: LazyNavItem, DynamicMenu.
 
@@ -60,7 +60,7 @@ and adding only the omit phase: a gated-out node is dropped *before* its childre
 hidden node never pays to build its subtree. Stamping reuses `ResolveNav` with a `StaticNavExpander`
 (the tree is already expanded once, with live context — it must not be re-expanded). The one host-free
 model shift behind it: **there is no "section"** — gating and contribution are properties of *nodes* at
-any depth, so contribution reuses the existing `InvokableNavItem` / `NavExpander` seam.
+any depth, so contribution reuses the existing `InvocableNavItem` / `NavExpander` seam.
 _Avoid_: NavBuilder (it composes existing seams, it is not a monolithic builder), Menu manager.
 
 **NavGate / NavGateStage**:

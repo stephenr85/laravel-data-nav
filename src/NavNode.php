@@ -19,7 +19,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
  * Because it implements spatie's {@see PropertyMorphableData}, a property or
  * collection typed as `NavNode` hydrates each element into its concrete kind via
  * {@see morph()} — the seam that lets a `NavTree` carry a discriminable union of
- * {@see NavLink} and {@see InvokableNavItem} nodes. The `kind` value is the
+ * {@see NavLink} and {@see InvocableNavItem} nodes. The `kind` value is the
  * on-the-wire discriminator; each concrete kind also carries its own schema
  * `$id` (via {@see SchemaIdentity}).
  */
@@ -132,7 +132,7 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
 
         return match ($kind) {
             'nav/link' => NavLink::class,
-            'nav/invokable-item' => InvokableNavItem::class,
+            'nav/invocable-item' => InvocableNavItem::class,
             default => null,
         };
     }

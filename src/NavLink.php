@@ -8,7 +8,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 /**
  * The static nav node — the common case: a titled link with an optional match
  * pattern and eagerly-held children. Its subtree is whatever was provided; it
- * does not build itself (that is {@see InvokableNavItem}).
+ * does not build itself (that is {@see InvocableNavItem}).
  *
  * A versioned, absolutely-addressable schema (`nav/link`, v1) via
  * {@see SchemaIdentity}, so it joins the family's Data → JSON Schema → TS

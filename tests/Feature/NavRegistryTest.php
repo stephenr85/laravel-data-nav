@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Rushing\DataNav\Contracts\NavExpander;
 use Rushing\DataNav\Contracts\NavGateStage;
 use Rushing\DataNav\Contracts\NavMatcher;
-use Rushing\DataNav\InvokableNavItem;
+use Rushing\DataNav\InvocableNavItem;
 use Rushing\DataNav\NavContext;
 use Rushing\DataNav\NavGate;
 use Rushing\DataNav\NavLink;
@@ -80,7 +80,7 @@ it('gates contributed (expanded) children — a denied child at depth is omitted
     {
         public function expand(NavNode $node): array
         {
-            if ($node instanceof InvokableNavItem) {
+            if ($node instanceof InvocableNavItem) {
                 return [
                     NavLink::make(title: 'Kept', href: '/kept'),
                     NavLink::make(title: 'Dropped', href: '/dropped')->withMeta(['deny' => true]),
@@ -98,7 +98,7 @@ it('gates contributed (expanded) children — a denied child at depth is omitted
     );
 
     $registry->register('main', fn () => [
-        InvokableNavItem::make(title: 'Section', invocable: 'x', href: '/section'),
+        InvocableNavItem::make(title: 'Section', invocable: 'x', href: '/section'),
     ]);
 
     $tree = $registry->build('main', new NavContext);
@@ -112,7 +112,7 @@ it('stamps active-state over the surviving, expanded tree', function () {
     {
         public function expand(NavNode $node): array
         {
-            if ($node instanceof InvokableNavItem) {
+            if ($node instanceof InvocableNavItem) {
                 return [NavLink::make(title: 'Leaf', href: '/section/leaf', match: 'section/leaf')];
             }
 
@@ -127,7 +127,7 @@ it('stamps active-state over the surviving, expanded tree', function () {
     );
 
     $registry->register('main', fn () => [
-        InvokableNavItem::make(title: 'Section', invocable: 'x', href: '/section', match: 'section*'),
+        InvocableNavItem::make(title: 'Section', invocable: 'x', href: '/section', match: 'section*'),
     ]);
 
     $context = new NavContext(request: Request::create('/section/leaf'));

@@ -10,7 +10,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 /**
  * An ordered collection of nav nodes forming one navigation region (a sidebar,
  * a primary menu, a Topics submenu). Items are a polymorphic {@see NavNode}
- * union — static {@see NavLink}s and invocable-backed {@see InvokableNavItem}s
+ * union — static {@see NavLink}s and invocable-backed {@see InvocableNavItem}s
  * hydrate into their concrete kind via the node `kind` discriminator.
  *
  * Serializes to JSON (Inertia) or array (Blade) with nested children preserved.

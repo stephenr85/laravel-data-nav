@@ -9,7 +9,7 @@ use Rushing\DataNav\Contracts\NavExpander;
  * holds, never invoking a capability. It is the expander {@see NavRegistry} uses
  * for its *stamping* pass — by then the tree has already been gated and expanded
  * once (with live {@see NavContext}), so re-invoking an
- * {@see InvokableNavItem}'s capability would be wasteful and, worse, would bring
+ * {@see InvocableNavItem}'s capability would be wasteful and, worse, would bring
  * back children the gate already omitted. Reusing {@see ResolveNav} with this
  * expander stamps active-state over the surviving tree without disturbing it.
  */

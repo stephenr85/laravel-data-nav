@@ -29,7 +29,7 @@ use Rushing\Popcorn\Registries\RegistryKey;
  *   1. **gate / omit** — drop any node the {@see NavGate} denies (secure-by-
  *      omission), **before** its children are expanded, so a hidden node never
  *      pays to build its subtree (its expander is never invoked).
- *   2. **expand** — via the bound {@see NavExpander} (an {@see InvokableNavItem}
+ *   2. **expand** — via the bound {@see NavExpander} (an {@see InvocableNavItem}
  *      yields its dynamic children). The current {@see NavContext} is bound into
  *      the container for the duration so a host expander/capability can resolve
  *      it (its `expand()` contract carries no context param).

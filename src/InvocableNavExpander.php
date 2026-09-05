@@ -7,12 +7,12 @@ use Rushing\Popcorn\Registries\Exceptions\RegistryMiss;
 
 /**
  * The default {@see NavExpander} — the behavior that used to live inline in
- * {@see ResolveNav}. An {@see InvokableNavItem} builds its children on demand by
+ * {@see ResolveNav}. An {@see InvocableNavItem} builds its children on demand by
  * dispatching its named popcorn capability through data-nav's own
  * {@see NavInvocableRegistry}; an unregistered name degrades to empty children
  * (safe), never an error. Any other node yields its eagerly-held children.
  */
-class InvokableNavExpander implements NavExpander
+class InvocableNavExpander implements NavExpander
 {
     public function __construct(
         private NavInvocableRegistry $registry,
@@ -23,7 +23,7 @@ class InvokableNavExpander implements NavExpander
      */
     public function expand(NavNode $node): array
     {
-        if (! $node instanceof InvokableNavItem) {
+        if (! $node instanceof InvocableNavItem) {
             return $node->children();
         }
 

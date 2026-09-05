@@ -1,6 +1,6 @@
 {
     "name": "rushing/laravel-data-nav",
-    "description": "Domain-agnostic navigation spine for Laravel. A polymorphic NavItem interface with SchemaIdentity DTO implementations (static NavLink + invocable-backed InvokableNavItem) and a NavTree, resolved server-side through a laravel-popcorn invocable. Consumable by both Inertia/React (JSON) and Blade (array) hosts. Emits no HTML. Part of the laravel-data-* family.",
+    "description": "Domain-agnostic navigation spine for Laravel. A polymorphic NavItem interface with SchemaIdentity DTO implementations (static NavLink + invocable-backed InvocableNavItem) and a NavTree, resolved server-side through a laravel-popcorn invocable. Consumable by both Inertia/React (JSON) and Blade (array) hosts. Emits no HTML. Part of the laravel-data-* family.",
     "type": "library",
     "license": "MIT",
     "require": {

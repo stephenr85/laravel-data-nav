@@ -2,7 +2,7 @@
 
 namespace Rushing\DataNav\Contracts;
 
-use Rushing\DataNav\InvokableNavItem;
+use Rushing\DataNav\InvocableNavItem;
 use Rushing\DataNav\NavLink;
 
 /**
@@ -12,7 +12,7 @@ use Rushing\DataNav\NavLink;
  *
  * This is an interface, not a class, so heterogeneous node kinds — a static
  * {@see NavLink} and an invocable-backed
- * {@see InvokableNavItem} that builds its own subtree — can
+ * {@see InvocableNavItem} that builds its own subtree — can
  * share one contract and serialize into a single polymorphic tree.
  */
 interface NavItem

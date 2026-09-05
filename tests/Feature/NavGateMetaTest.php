@@ -1,6 +1,6 @@
 <?php
 
-use Rushing\DataNav\InvokableNavItem;
+use Rushing\DataNav\InvocableNavItem;
 use Rushing\DataNav\NavLink;
 use Rushing\DataNav\NavTree;
 
@@ -22,8 +22,8 @@ it('exposes gate-meta in-process but omits it from the serialized array', functi
         ->and($link->toJson())->not->toContain('permission');
 });
 
-it('omits gate-meta on an InvokableNavItem too', function () {
-    $item = InvokableNavItem::make(title: 'Platform', invocable: 'frame/resources')
+it('omits gate-meta on an InvocableNavItem too', function () {
+    $item = InvocableNavItem::make(title: 'Platform', invocable: 'frame/resources')
         ->withMeta(['permission' => 'platform.view']);
 
     expect($item->meta)->toBe(['permission' => 'platform.view'])
@@ -41,7 +41,7 @@ it('leaves a node with no meta unchanged', function () {
 it('does not carry meta across the morph round-trip — a rehydrated node has empty meta', function () {
     $tree = NavTree::make([
         NavLink::make(title: 'Studio', href: '/studio')->withMeta(['entitlement' => ['composition.content']]),
-        InvokableNavItem::make(title: 'Platform', invocable: 'frame/resources')->withMeta(['permission' => 'platform.view']),
+        InvocableNavItem::make(title: 'Platform', invocable: 'frame/resources')->withMeta(['permission' => 'platform.view']),
     ]);
 
     // The wire never carried the meta, so it cannot leak on the way back in.
@@ -52,7 +52,7 @@ it('does not carry meta across the morph round-trip — a rehydrated node has em
 
     expect($rehydrated->items[0])->toBeInstanceOf(NavLink::class)
         ->and($rehydrated->items[0]->meta)->toBe([])
-        ->and($rehydrated->items[1])->toBeInstanceOf(InvokableNavItem::class)
+        ->and($rehydrated->items[1])->toBeInstanceOf(InvocableNavItem::class)
         ->and($rehydrated->items[1]->invocable)->toBe('frame/resources')
         ->and($rehydrated->items[1]->meta)->toBe([]);
 });

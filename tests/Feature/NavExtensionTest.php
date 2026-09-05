@@ -1,8 +1,8 @@
 <?php
 
 use Rushing\DataNav\Contracts\NavExpander;
-use Rushing\DataNav\InvokableNavExpander;
-use Rushing\DataNav\InvokableNavItem;
+use Rushing\DataNav\InvocableNavExpander;
+use Rushing\DataNav\InvocableNavItem;
 use Rushing\DataNav\NavInvocableRegistry;
 use Rushing\DataNav\NavKindRegistry;
 use Rushing\DataNav\NavLink;
@@ -62,8 +62,8 @@ it('carries the additive icon and routeName fields through the round-trip', func
         ->and($rehydrated->items[0]->routeName)->toBe('knowledge.index');
 });
 
-it('carries icon and routeName on an InvokableNavItem too', function () {
-    $item = InvokableNavItem::make(
+it('carries icon and routeName on an InvocableNavItem too', function () {
+    $item = InvocableNavItem::make(
         title: 'Topics',
         invocable: 'publishing/topics',
         icon: 'Folder',
@@ -82,12 +82,12 @@ it('pre-seeds the kind registry with the two built-in node kinds', function () {
     $registry = app(NavKindRegistry::class);
 
     expect($registry->classFor('nav/link'))->toBe(NavLink::class)
-        ->and($registry->classFor('nav/invokable-item'))->toBe(InvokableNavItem::class)
+        ->and($registry->classFor('nav/invocable-item'))->toBe(InvocableNavItem::class)
         ->and($registry->classFor('unregistered'))->toBeNull()
         ->and($registry->classFor(null))->toBeNull()
         ->and($registry->all())->toBe([
             'nav/link' => NavLink::class,
-            'nav/invokable-item' => InvokableNavItem::class,
+            'nav/invocable-item' => InvocableNavItem::class,
         ]);
 });
 
@@ -126,12 +126,12 @@ it('keeps a slash-bearing kind spelled exactly as it ships, because the key IS t
     // `/` is not a Key character, so these are RelativeUriKeys. If the grammar ever rewrote them the
     // round-trip would break silently: `kind` goes to the client and comes back.
     // all() renders the WIRE spelling — what a client sends and what this method has always returned.
-    expect(array_keys($registry->all()))->toBe(['nav/link', 'nav/invokable-item']);
+    expect(array_keys($registry->all()))->toBe(['nav/link', 'nav/invocable-item']);
 
     // keys() is the kernel's read and is root-stamped and dotted. Both are asserted because the pair is
     // exactly where a lossy translation would hide: one of them looking right is not enough.
     expect(array_map('strval', $registry->keys()))
-        ->toBe(['data-nav.kinds.nav.link', 'data-nav.kinds.nav.invokable-item']);
+        ->toBe(['data-nav.kinds.nav.link', 'data-nav.kinds.nav.invocable-item']);
 });
 
 it('keeps a host-registered custom kind hydration-safe through the morph round-trip', function () {
@@ -169,7 +169,7 @@ it('resolves active-state over a host kind once it is registered', function () {
 
 it('binds the default expander to the invocable-item strategy', function () {
     expect(app(NavExpander::class))
-        ->toBeInstanceOf(InvokableNavExpander::class);
+        ->toBeInstanceOf(InvocableNavExpander::class);
 });
 
 it('lets a host swap the expansion strategy for a custom node kind', function () {

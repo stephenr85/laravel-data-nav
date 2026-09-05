@@ -21,7 +21,7 @@ class ServiceProvider extends PackageServiceProvider
         // The expansion strategy defaults to the original invocable-item
         // behavior; a host swaps this to teach resolution a custom kind's
         // subtree. Kept a singleton so a host's registered custom kinds hold.
-        $this->app->bind(NavExpander::class, InvokableNavExpander::class);
+        $this->app->bind(NavExpander::class, InvocableNavExpander::class);
 
         // The open kind registry, pre-seeded with the two built-ins; a host
         // registers additional kinds so its custom nodes survive the morph

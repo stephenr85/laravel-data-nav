@@ -15,11 +15,11 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
  * tree): the item defers its subtree to a capability, local now, MCP/webhook
  * later — transport-agnostic by construction.
  *
- * A versioned schema (`nav/invokable-item`, v1) via {@see SchemaIdentity}, so a
+ * A versioned schema (`nav/invocable-item`, v1) via {@see SchemaIdentity}, so a
  * mixed tree of {@see NavLink} and this kind is a discriminable union.
  */
 #[TypeScript]
-class InvokableNavItem extends NavNode implements SchemaIdentity
+class InvocableNavItem extends NavNode implements SchemaIdentity
 {
     /**
      * @param  array<string, mixed>  $input
@@ -39,7 +39,7 @@ class InvokableNavItem extends NavNode implements SchemaIdentity
         ?string $routeName = null,
     ) {
         parent::__construct(
-            kind: 'nav/invokable-item',
+            kind: 'nav/invocable-item',
             title: $title,
             href: $href,
             match: $match,
@@ -78,7 +78,7 @@ class InvokableNavItem extends NavNode implements SchemaIdentity
 
     public static function schemaName(): string
     {
-        return 'nav/invokable-item';
+        return 'nav/invocable-item';
     }
 
     public static function schemaVersion(): int

@@ -16,7 +16,7 @@ use Rushing\Popcorn\Registries\RelativeUriKey;
 /**
  * The open registry mapping a node `kind` discriminator to its concrete
  * {@see NavNode} class. Pre-seeded with the two package built-ins
- * (`nav/link` → {@see NavLink}, `nav/invokable-item` → {@see InvokableNavItem});
+ * (`nav/link` → {@see NavLink}, `nav/invocable-item` → {@see InvocableNavItem});
  * a host registers additional kinds so its custom nodes survive the
  * `toArray()` → invoke → `from()` round-trip in {@see ResolveNav}.
  *
@@ -70,7 +70,7 @@ class NavKindRegistry implements Gated, Registry
      */
     public const BUILT_INS = [
         'nav/link' => NavLink::class,
-        'nav/invokable-item' => InvokableNavItem::class,
+        'nav/invocable-item' => InvocableNavItem::class,
     ];
 
     /** @var BasicRegistry<class-string<NavNode>> */
