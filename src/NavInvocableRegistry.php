@@ -7,7 +7,6 @@ use Rushing\Popcorn\InvocableRegistry;
 use Rushing\Popcorn\Registries\IsRegistry;
 use Rushing\Popcorn\Registries\OnDuplicate;
 use Rushing\Popcorn\Registries\Optionality;
-use Rushing\Popcorn\Registries\RegistryArity;
 
 /**
  * data-nav's own branch of the keyspace — the capabilities this package owns, and nobody else's.
@@ -32,12 +31,9 @@ use Rushing\Popcorn\Registries\RegistryArity;
  */
 #[IsRegistry(
     root: 'data-nav',
-    of: 'navigation capabilities — active-state resolution and the invocable-backed node expanders',
-    arity: RegistryArity::PickOne,
     entryType: Invocable::class,
     onDuplicate: OnDuplicate::Supersede,
     optionality: Optionality::Optional,
-    note: 'A host overriding `data-nav.resolve` with its own matcher/expander composition is the swap '
-        .'seam this inherits from InvocableRegistry, not an accident.',
+    description: 'navigation capabilities — active-state resolution and the invocable-backed node expanders. A host overriding `data-nav.resolve` with its own matcher/expander composition is the swap seam this inherits from InvocableRegistry, not an accident.',
 )]
 class NavInvocableRegistry extends InvocableRegistry {}

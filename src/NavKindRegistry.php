@@ -9,7 +9,6 @@ use Rushing\Popcorn\Registries\IsRegistry;
 use Rushing\Popcorn\Registries\OnDuplicate;
 use Rushing\Popcorn\Registries\Optionality;
 use Rushing\Popcorn\Registries\Registry;
-use Rushing\Popcorn\Registries\RegistryArity;
 use Rushing\Popcorn\Registries\RegistryKey;
 use Rushing\Popcorn\Registries\RelativeUriKey;
 
@@ -48,14 +47,10 @@ use Rushing\Popcorn\Registries\RelativeUriKey;
  */
 #[IsRegistry(
     root: 'data-nav.kinds',
-    of: 'nav node kinds — one concrete NavNode class per `kind` discriminator, so a host node survives the round-trip',
-    arity: RegistryArity::PickOne,
     entryType: NavNode::class,
     onDuplicate: OnDuplicate::Supersede,
     optionality: Optionality::Optional,
-    note: 'Supersede records the behaviour this class always had — registration was a plain array '
-        .'assignment, and the docblock calls overriding a built-in kind a supported act ("register (or '
-        .'override)"). The two package built-ins seed at construction and a host may replace either.',
+    description: 'nav node kinds — one concrete NavNode class per `kind` discriminator, so a host node survives the round-trip. Supersede records the behaviour this class always had — registration was a plain array assignment, and the docblock calls overriding a built-in kind a supported act ("register (or override)"). The two package built-ins seed at construction and a host may replace either.',
 )]
 /**
  * @implements Registry<class-string<NavNode>>

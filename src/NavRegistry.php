@@ -13,7 +13,6 @@ use Rushing\Popcorn\Registries\IsRegistry;
 use Rushing\Popcorn\Registries\OnDuplicate;
 use Rushing\Popcorn\Registries\Optionality;
 use Rushing\Popcorn\Registries\Registry;
-use Rushing\Popcorn\Registries\RegistryArity;
 use Rushing\Popcorn\Registries\RegistryKey;
 
 /**
@@ -57,15 +56,10 @@ use Rushing\Popcorn\Registries\RegistryKey;
  */
 #[IsRegistry(
     root: 'data-nav.navigations',
-    of: 'named navigations — one factory per navigation region (tenant, operator, docs, …)',
-    arity: RegistryArity::PickOne,
     entryType: 'callable(NavContext): list<NavNode>',
     onDuplicate: OnDuplicate::Supersede,
     optionality: Optionality::Optional,
-    note: 'A host re-registering an existing name deliberately overrides that navigation; it is the '
-        .'documented override seam, not an accident. Supersession APPENDS, so an override moves the '
-        .'name to the end of registration order — harmless here, because nothing enumerates across '
-        .'navigations (each is built by name).',
+    description: 'named navigations — one factory per navigation region (tenant, operator, docs, …). A host re-registering an existing name deliberately overrides that navigation; it is the documented override seam, not an accident. Supersession APPENDS, so an override moves the name to the end of registration order — harmless here, because nothing enumerates across navigations (each is built by name).',
 )]
 class NavRegistry implements Gated, Registry
 {
