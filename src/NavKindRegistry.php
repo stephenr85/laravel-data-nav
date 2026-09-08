@@ -6,8 +6,8 @@ use Rushing\Popcorn\Registries\Authorizer;
 use Rushing\Popcorn\Registries\BasicRegistry;
 use Rushing\Popcorn\Registries\Gated;
 use Rushing\Popcorn\Registries\IsRegistry;
-use Rushing\Popcorn\Registries\OnDuplicate;
-use Rushing\Popcorn\Registries\Optionality;
+use Rushing\Popcorn\Registries\OnKeyDuplicate;
+use Rushing\Popcorn\Registries\PopulationRequirement;
 use Rushing\Popcorn\Registries\Registry;
 use Rushing\Popcorn\Registries\RegistryKey;
 use Rushing\Popcorn\Registries\RelativeUriKey;
@@ -48,8 +48,8 @@ use Rushing\Popcorn\Registries\RelativeUriKey;
 #[IsRegistry(
     root: 'data-nav.kinds',
     entryType: NavNode::class,
-    onDuplicate: OnDuplicate::Supersede,
-    optionality: Optionality::Optional,
+    onKeyDuplicate: OnKeyDuplicate::Supersede,
+    populationRequirement: PopulationRequirement::Optional,
     description: 'nav node kinds — one concrete NavNode class per `kind` discriminator, so a host node survives the round-trip. Supersede records the behaviour this class always had — registration was a plain array assignment, and the docblock calls overriding a built-in kind a supported act ("register (or override)"). The two package built-ins seed at construction and a host may replace either.',
 )]
 /**

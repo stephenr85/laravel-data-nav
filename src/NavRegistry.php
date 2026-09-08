@@ -10,8 +10,8 @@ use Rushing\Popcorn\Registries\BasicRegistry;
 use Rushing\Popcorn\Registries\Exceptions\RegistryMiss;
 use Rushing\Popcorn\Registries\Gated;
 use Rushing\Popcorn\Registries\IsRegistry;
-use Rushing\Popcorn\Registries\OnDuplicate;
-use Rushing\Popcorn\Registries\Optionality;
+use Rushing\Popcorn\Registries\OnKeyDuplicate;
+use Rushing\Popcorn\Registries\PopulationRequirement;
 use Rushing\Popcorn\Registries\Registry;
 use Rushing\Popcorn\Registries\RegistryKey;
 
@@ -57,8 +57,8 @@ use Rushing\Popcorn\Registries\RegistryKey;
 #[IsRegistry(
     root: 'data-nav.navigations',
     entryType: 'callable(NavContext): list<NavNode>',
-    onDuplicate: OnDuplicate::Supersede,
-    optionality: Optionality::Optional,
+    onKeyDuplicate: OnKeyDuplicate::Supersede,
+    populationRequirement: PopulationRequirement::Optional,
     description: 'named navigations — one factory per navigation region (tenant, operator, docs, …). A host re-registering an existing name deliberately overrides that navigation; it is the documented override seam, not an accident. Supersession APPENDS, so an override moves the name to the end of registration order — harmless here, because nothing enumerates across navigations (each is built by name).',
 )]
 class NavRegistry implements Gated, Registry

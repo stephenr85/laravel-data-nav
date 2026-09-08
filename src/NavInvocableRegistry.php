@@ -5,8 +5,8 @@ namespace Rushing\DataNav;
 use Rushing\Popcorn\Contracts\Invocable;
 use Rushing\Popcorn\InvocableRegistry;
 use Rushing\Popcorn\Registries\IsRegistry;
-use Rushing\Popcorn\Registries\OnDuplicate;
-use Rushing\Popcorn\Registries\Optionality;
+use Rushing\Popcorn\Registries\OnKeyDuplicate;
+use Rushing\Popcorn\Registries\PopulationRequirement;
 
 /**
  * data-nav's own branch of the keyspace — the capabilities this package owns, and nobody else's.
@@ -32,8 +32,8 @@ use Rushing\Popcorn\Registries\Optionality;
 #[IsRegistry(
     root: 'data-nav',
     entryType: Invocable::class,
-    onDuplicate: OnDuplicate::Supersede,
-    optionality: Optionality::Optional,
+    onKeyDuplicate: OnKeyDuplicate::Supersede,
+    populationRequirement: PopulationRequirement::Optional,
     description: 'navigation capabilities — active-state resolution and the invocable-backed node expanders. A host overriding `data-nav.resolve` with its own matcher/expander composition is the swap seam this inherits from InvocableRegistry, not an accident.',
 )]
 class NavInvocableRegistry extends InvocableRegistry {}
