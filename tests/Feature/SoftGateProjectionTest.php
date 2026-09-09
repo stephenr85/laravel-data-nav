@@ -2,6 +2,7 @@
 
 use Rushing\DataNav\Contracts\NavGateStage;
 use Rushing\DataNav\Contracts\NavVerdictStage;
+use Rushing\DataNav\InvocableNavItem;
 use Rushing\DataNav\NavContext;
 use Rushing\DataNav\NavGate;
 use Rushing\DataNav\NavGateVerdict;
@@ -128,6 +129,34 @@ it('serializes the locked projection across the morph round-trip (wire-visible, 
     $rehydrated = NavTree::from(json_decode($tree->toJson(), true));
 
     expect($rehydrated->items[0])->toBeInstanceOf(NavLink::class)
+        ->and($rehydrated->items[0]->locked)->toBeInstanceOf(NavLocked::class)
+        ->and($rehydrated->items[0]->locked->reason)->toBe('Available on the Songwriter plan')
+        ->and($rehydrated->items[0]->locked->upsell)->toBe('go-songwriter');
+});
+
+/**
+ * ⚠️ The round-trip test above passes for a {@see NavLink}, which has NO constructor of its own and
+ * so inherits {@see NavNode}'s — `locked` included. {@see InvocableNavItem} DOES declare one, and it
+ * did not list `locked`, so spatie hydrated every invocable node with the default `null` and the lock
+ * was silently dropped on the way back in.
+ *
+ * That is the exact round-trip `NavRegistry::build()` performs at its active-stamping step, and every
+ * package-contributed nav SEAT is an `InvocableNavItem` — so a lock could be produced correctly and
+ * still never reach the wire from any real navigation. Found by asserting on the built manifest's
+ * emitted array rather than on a property read; a property-level test cannot see this at all.
+ */
+it('serializes the locked projection across the round-trip for an INVOCABLE node too', function () {
+    $tree = NavTree::make([
+        InvocableNavItem::make(title: 'Studio', invocable: 'frame.resources', href: '/studio')
+            ->locked('Available on the Songwriter plan', 'go-songwriter'),
+    ]);
+
+    expect($tree->toArray()['items'][0]['locked'])
+        ->toBe(['reason' => 'Available on the Songwriter plan', 'upsell' => 'go-songwriter']);
+
+    $rehydrated = NavTree::from(json_decode($tree->toJson(), true));
+
+    expect($rehydrated->items[0])->toBeInstanceOf(InvocableNavItem::class)
         ->and($rehydrated->items[0]->locked)->toBeInstanceOf(NavLocked::class)
         ->and($rehydrated->items[0]->locked->reason)->toBe('Available on the Songwriter plan')
         ->and($rehydrated->items[0]->locked->upsell)->toBe('go-songwriter');

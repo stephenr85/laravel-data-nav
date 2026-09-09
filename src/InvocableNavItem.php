@@ -17,6 +17,22 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
  *
  * A versioned schema (`nav/invocable-item`, v1) via {@see SchemaIdentity}, so a
  * mixed tree of {@see NavLink} and this kind is a discriminable union.
+ *
+ * ## Declaring a constructor here means re-declaring every serialized base field
+ *
+ * {@see NavLink} declares none and inherits {@see NavNode}'s, so it hydrates every base field for
+ * free. This class declares one in order to add `invocable`/`input` — and spatie hydrates a Data
+ * object THROUGH its constructor, so any base field this signature omits is silently reset to its
+ * default on the way back in, no matter what the array carried.
+ *
+ * `locked` was that field. It is wire-visible by design (unlike the `#[Hidden]` meta bag), it round-
+ * tripped correctly for a `NavLink`, and it vanished for an invocable node — which is every
+ * package-contributed nav SEAT, and therefore every node a soft gate would ever lock. The loss
+ * happened inside `NavRegistry::build()`'s own `toArray()`/`from()` active-stamping round-trip, so a
+ * lock could be produced correctly at projection and still never reach a client.
+ *
+ * A new serialized field on `NavNode` must be added to this signature too. `meta` is the deliberate
+ * exception: it is `#[Hidden]`, so the wire never carries it and there is nothing to hydrate.
  */
 #[TypeScript]
 class InvocableNavItem extends NavNode implements SchemaIdentity
@@ -37,6 +53,7 @@ class InvocableNavItem extends NavNode implements SchemaIdentity
         bool $activeTrail = false,
         ?string $icon = null,
         ?string $routeName = null,
+        ?NavLocked $locked = null,
     ) {
         parent::__construct(
             kind: 'nav/invocable-item',
@@ -48,6 +65,7 @@ class InvocableNavItem extends NavNode implements SchemaIdentity
             activeTrail: $activeTrail,
             icon: $icon,
             routeName: $routeName,
+            locked: $locked,
         );
     }
 
