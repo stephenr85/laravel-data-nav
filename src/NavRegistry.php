@@ -152,26 +152,56 @@ class NavRegistry implements Gated, Registry
         /** @var callable(NavContext): array<int, NavNode> $factory */
         $factory = $this->resolve($key);
 
-        // Thread the context to expansion: the NavExpander contract carries no
-        // context, so a host capability resolves the current NavContext from the
-        // container (bound here for the length of the build).
-        Container::getInstance()->instance(NavContext::class, $context);
+        // Thread the context to expansion: the NavExpander contract carries no context, so a host
+        // capability resolves the current NavContext from the container.
+        //
+        // ⚠️ Bound for the length of THIS build and restored after, which is what the comment here used
+        // to claim and `instance()` alone does not do. `instance()` binds for the container's lifetime;
+        // nothing unbound it, so after any build a stale NavContext stayed bound — and `NavContext`
+        // carries `?Authenticatable $user` and `?Request $request`.
+        //
+        // The stale binding is reachable, not theoretical: `FrameResourcesInvocable` in
+        // `splicewire/laravel-beam-ux` and its host counterpart both do
+        // `$container->bound(NavContext::class) ? $container->make(...) : …`, and `bound()` stays true
+        // forever after the first build. Under request-per-process PHP the stale context is at worst
+        // this request's own. Under a persistent worker (Octane/FrankenPHP, and the queue worker, which
+        // is one already) it is the PREVIOUS REQUEST'S USER, feeding a navigation/resource-gating path.
+        //
+        // Restore-in-`finally` is the estate's idiom for exactly this — the same shape as
+        // `FederationContext::during()` and `DelegationContext::during()`. It is also nesting-safe: a
+        // capability that triggers a nested build gets its own context and hands the outer one back.
+        $container = Container::getInstance();
+        $hadPrevious = $container->bound(NavContext::class);
+        $previous = $hadPrevious ? $container->make(NavContext::class) : null;
 
-        $raw = $factory($context);
-        $tree = NavTree::make($this->gateExpand($raw, $context));
+        $container->instance(NavContext::class, $context);
 
-        // Stamp active-state over the surviving, already-expanded tree — reuse
-        // ResolveNav, but with a static expander so it never re-expands (which
-        // would re-invoke capabilities and undo child-level gating). The
-        // toArray()/from() round-trip also strips the #[Hidden] gate-meta.
-        $resolve = new ResolveNav($this->matcher, new StaticNavExpander);
+        try {
+            $raw = $factory($context);
+            $tree = NavTree::make($this->gateExpand($raw, $context));
 
-        $output = $resolve->invoke([
-            'tree' => $tree->toArray(),
-            'path' => $context->request?->path() ?? '',
-        ]);
+            // Stamp active-state over the surviving, already-expanded tree — reuse
+            // ResolveNav, but with a static expander so it never re-expands (which
+            // would re-invoke capabilities and undo child-level gating). The
+            // toArray()/from() round-trip also strips the #[Hidden] gate-meta.
+            $resolve = new ResolveNav($this->matcher, new StaticNavExpander);
 
-        return NavTree::from($output['tree']);
+            $output = $resolve->invoke([
+                'tree' => $tree->toArray(),
+                'path' => $context->request?->path() ?? '',
+            ]);
+
+            return NavTree::from($output['tree']);
+        } finally {
+            // Restore rather than forget: an outer build's context must survive a nested one. Where
+            // there was no previous binding, drop it entirely so `bound()` reads false again — leaving
+            // a context bound is the defect this block exists to close.
+            if ($hadPrevious) {
+                $container->instance(NavContext::class, $previous);
+            } else {
+                $container->forgetInstance(NavContext::class);
+            }
+        }
     }
 
     /**
