@@ -54,6 +54,7 @@ class InvocableNavItem extends NavNode implements SchemaIdentity
         ?string $icon = null,
         ?string $routeName = null,
         ?NavLocked $locked = null,
+        ?string $zone = null,
     ) {
         parent::__construct(
             kind: 'nav/invocable-item',
@@ -66,6 +67,7 @@ class InvocableNavItem extends NavNode implements SchemaIdentity
             icon: $icon,
             routeName: $routeName,
             locked: $locked,
+            zone: $zone,
         );
     }
 

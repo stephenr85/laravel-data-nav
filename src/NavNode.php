@@ -74,6 +74,7 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
          * entirely (never reaches this state). See {@see locked()}.
          */
         public ?NavLocked $locked = null,
+        public ?string $zone = null,
     ) {}
 
     /**
@@ -182,6 +183,18 @@ abstract class NavNode extends Data implements NavItem, PropertyMorphableData
      *
      * @param  array<int, NavNode>  $children
      */
+    /**
+     * The same node, drawn in `$zone` (ux-walkthrough M4): `primary` is the rail, `meta` the Developer zone. A top-level
+     * fact a projector sets; a renderer reads it. It is a wire field rather than `meta` because `meta` is #[Hidden].
+     */
+    public function inZone(string $zone): static
+    {
+        $clone = clone $this;
+        $clone->zone = $zone;
+
+        return $clone;
+    }
+
     public function stamped(bool $active, bool $activeTrail, array $children): static
     {
         $clone = clone $this;
