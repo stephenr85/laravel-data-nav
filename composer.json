@@ -97,6 +97,11 @@
             "include": [
                 "composer.local.json"
             ]
+        },
+        "typescript-transformer": {
+            "directories": {
+                "src": "NavTree and NavNode, shared with the frontend as Inertia props; no declaration names them"
+            }
         }
     },
     "config": {
