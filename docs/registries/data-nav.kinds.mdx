@@ -1,0 +1,69 @@
+---
+title: Navigation node kinds
+segment: data-nav.kinds
+nav_order: 100
+excerpt: The map from a node's kind discriminator to its concrete class, so custom nodes survive serialization.
+---
+
+# Navigation node kinds
+
+`data-nav.kinds` maps a node's **`kind` discriminator** to the concrete `NavNode` class that
+hydrates it. Every node serializes with its `kind`, and when a tree comes back from an array, as it
+does inside `ResolveNav` and whenever you call `NavTree::from()`, this registry decides which class
+to rebuild each node as. A custom node whose kind is registered keeps its own fields through the
+round trip.
+
+{/* registry-facts:start — generated from the #[IsRegistry] declaration by `splicewire:beam:docs:registries:scaffold`. Rerun the command; do not edit between these markers. */}
+
+- **Root:** `data-nav.kinds`
+- **Entries:** `Rushing\DataNav\NavNode`
+- **Duplicate keys:** Supersede — a later registration under a taken key replaces the earlier entry, in its place
+- **Population:** Optional — an empty registry is normal
+- **Order:** `100` (display order, ascending)
+- **Declared by:** `Rushing\DataNav\NavKindRegistry`
+
+{/* registry-facts:end */}
+
+## What ships
+
+Two kinds, registered when the registry is constructed:
+
+- **`nav/link`** → `NavLink`, a static link with optional children.
+- **`nav/invocable-item`** → `InvocableNavItem`, a node whose children come from a capability in
+  [`data-nav`](data-nav).
+
+## Adding a kind
+
+Give your node class its own discriminator and register it, usually from a service provider:
+
+```php
+use Rushing\DataNav\NavKindRegistry;
+
+$this->app->make(NavKindRegistry::class)->register('app/team-switcher', TeamSwitcherNode::class);
+```
+
+Kinds keep their slash: `nav/link` is the exact string that ships to clients, so the registry stores
+it as spelled. `all()` returns every registered kind keyed that way.
+
+## Reading it
+
+- `classFor($kind)` returns the class or `null`. `null` means "no custom class", and hydration falls
+  back to the default. This is the read the package itself uses.
+- `resolve($kind)` throws when the kind isn't registered, like every other registry's `resolve()`.
+
+## Duplicates
+
+The policy is **supersede**: registering a taken kind replaces its class, including either of the
+two built-ins.
+
+## Related registries
+
+- [`data-nav.navigations`](data-nav.navigations): the navigations whose nodes these classes hydrate.
+- [`data-nav`](data-nav): the capabilities that expand `nav/invocable-item` nodes.
+
+## Going deeper
+
+The source is
+[`NavKindRegistry`](https://github.com/stephenr85/laravel-data-nav/blob/main/src/NavKindRegistry.php);
+the base node class is
+[`NavNode`](https://github.com/stephenr85/laravel-data-nav/blob/main/src/NavNode.php).

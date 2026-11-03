@@ -1,0 +1,79 @@
+---
+title: Named navigations
+segment: data-nav.navigations
+nav_order: 100
+excerpt: One factory per navigation region (tenant, admin, footer), built per request through the gate, expand and stamp pipeline.
+---
+
+# Named navigations
+
+`data-nav.navigations` holds your application's **navigations by name**. Each entry is a factory
+that receives a `NavContext` (the current user, request and any attributes you add) and returns the
+raw list of nodes for one navigation region. `NavRegistry::build($name, $context)` turns that list
+into a finished `NavTree` ready to serialize to your front end.
+
+{/* registry-facts:start — generated from the #[IsRegistry] declaration by `splicewire:beam:docs:registries:scaffold`. Rerun the command; do not edit between these markers. */}
+
+- **Root:** `data-nav.navigations`
+- **Entries:** `callable(NavContext): list<NavNode>`
+- **Duplicate keys:** Supersede — a later registration under a taken key replaces the earlier entry, in its place
+- **Population:** Optional — an empty registry is normal
+- **Order:** `100` (display order, ascending)
+- **Declared by:** `Rushing\DataNav\NavRegistry`
+
+{/* registry-facts:end */}
+
+## Registering a navigation
+
+The package ships none: navigations are your vocabulary. Register them from a service provider:
+
+```php
+use Rushing\DataNav\NavContext;
+use Rushing\DataNav\NavLink;
+use Rushing\DataNav\NavRegistry;
+
+public function boot(): void
+{
+    $this->app->make(NavRegistry::class)->register('admin', fn (NavContext $context) => [
+        NavLink::make('Dashboard', href: '/admin'),
+        NavLink::make('Users', href: '/admin/users'),
+    ]);
+}
+```
+
+A second region (settings, footer, mobile) is another key. `names()` lists them.
+
+## What `build()` does
+
+Building runs four passes over the factory's nodes:
+
+1. **Gate.** Each node goes through the `NavGate`, and a node it denies is dropped *before* its
+   children are expanded, so a hidden section never pays to build its subtree. The gate is bound
+   with no stages, so everything passes until you add one with `NavGate::through()`.
+2. **Expand.** The bound `NavExpander` fills dynamic nodes, such as an `InvocableNavItem` whose
+   children come from a [`data-nav`](data-nav) capability. The `NavContext` is bound in the container
+   for the length of the build, so an expander can read it, and the previous binding is restored
+   afterwards.
+3. **Gate the children.** The same gate runs over expanded children, so gating applies at any depth.
+4. **Stamp.** Active state and the active trail are set from the request path, and server-only gate
+   metadata is stripped from the result.
+
+Building a name nobody registered throws.
+
+## Duplicates
+
+The policy is **supersede**: registering a taken name replaces that navigation, which is how your
+application overrides one a package registered. Nothing enumerates across navigations, since each
+is built by name, so the replacement's position in registration order doesn't matter.
+
+## Related registries
+
+- [`data-nav`](data-nav): the capabilities that expand and stamp a navigation's tree.
+- [`data-nav.kinds`](data-nav.kinds): the node classes a factory can return.
+
+## Going deeper
+
+The source is
+[`NavRegistry`](https://github.com/stephenr85/laravel-data-nav/blob/main/src/NavRegistry.php); the
+gate pipeline is
+[`NavGate`](https://github.com/stephenr85/laravel-data-nav/blob/main/src/NavGate.php).

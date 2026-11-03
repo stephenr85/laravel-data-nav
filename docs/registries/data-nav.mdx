@@ -1,0 +1,91 @@
+---
+title: Navigation capabilities
+segment: data-nav
+nav_order: 100
+excerpt: The invocables that resolve a navigation tree and build its dynamic children, and the map of data-nav's three registries.
+---
+
+# Navigation capabilities
+
+[`rushing/laravel-data-nav`](https://github.com/stephenr85/laravel-data-nav) builds navigation trees
+on the server and hands them to any front end as plain data. It declares three registries, and
+`data-nav` is the top of that branch: it holds the package's **invocables**, the named
+array-in, array-out capabilities that resolve a tree's active state and build the children of a node
+whose contents aren't known until request time.
+
+Which of the three you reach for:
+
+- **Define a navigation (a sidebar, a footer, a settings menu) and build it per request**:
+  [`data-nav.navigations`](data-nav.navigations).
+- **Ship your own node type and keep its fields through serialization**:
+  [`data-nav.kinds`](data-nav.kinds).
+- **Fill a node's children dynamically, or replace how active state is resolved**: this registry,
+  `data-nav`.
+
+{/* registry-facts:start — generated from the #[IsRegistry] declaration by `splicewire:beam:docs:registries:scaffold`. Rerun the command; do not edit between these markers. */}
+
+- **Root:** `data-nav`
+- **Entries:** `Rushing\Popcorn\Contracts\Invocable`
+- **Duplicate keys:** Supersede — a later registration under a taken key replaces the earlier entry, in its place
+- **Population:** Optional — an empty registry is normal
+- **Order:** `100` (display order, ascending)
+- **Declared by:** `Rushing\DataNav\NavInvocableRegistry`
+
+{/* registry-facts:end */}
+
+## What ships
+
+One invocable, **`data-nav.resolve`** (`ResolveNav`). Given a serialized tree and the current path,
+it expands any dynamic nodes and marks which node is active and which nodes lie on the trail to it.
+`NavRegistry::build()` uses it for its final stamping pass.
+
+## Dynamic children
+
+An `InvocableNavItem` is a node whose children come from an invocable instead of being listed
+up front. It names the capability and the input to pass:
+
+```php
+use Rushing\DataNav\InvocableNavItem;
+
+InvocableNavItem::make(title: 'Projects', invocable: 'projects', input: ['limit' => 10]);
+```
+
+When the tree is expanded, the default expander calls `invoke('projects', ['limit' => 10])` on this
+registry and reads the `items` array from the result, each item a `NavNode` or its array form. Register
+the capability that answers it from your service provider:
+
+```php
+use Rushing\DataNav\NavInvocableRegistry;
+
+public function boot(): void
+{
+    $this->app->make(NavInvocableRegistry::class)->register(new RecentProjectsInvocable);
+}
+```
+
+An invocable registers under its own `name()`. A relative name such as `projects` is stored as
+`data-nav.projects`, and callers keep using `projects`.
+
+A node that names a capability nobody registered expands to **no children** rather than throwing,
+so a stale name in a stored tree degrades quietly instead of breaking the page.
+
+## Duplicates
+
+The policy is **supersede**. Registering an invocable under a taken name replaces it, and that is
+the intended way to change resolution: register your own `data-nav.resolve` and every build uses
+your matcher and expander instead of the package's.
+
+## Related registries
+
+- [`data-nav.navigations`](data-nav.navigations): the named navigations whose trees these
+  capabilities resolve.
+- [`data-nav.kinds`](data-nav.kinds): the node classes a tree can contain.
+
+## Going deeper
+
+The source is
+[`NavInvocableRegistry`](https://github.com/stephenr85/laravel-data-nav/blob/main/src/NavInvocableRegistry.php),
+which inherits everything from popcorn's
+[`InvocableRegistry`](https://github.com/stephenr85/php-popcorn/blob/main/src/InvocableRegistry.php);
+the default expander is
+[`InvocableNavExpander`](https://github.com/stephenr85/laravel-data-nav/blob/main/src/InvocableNavExpander.php).
