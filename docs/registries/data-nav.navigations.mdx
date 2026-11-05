@@ -64,9 +64,10 @@ Building a name nobody registered throws.
 
 ## Duplicates
 
-The policy is **supersede**: registering a taken name replaces that navigation, which is how your
-application overrides one a package registered. Nothing enumerates across navigations, since each
-is built by name, so the replacement's position in registration order doesn't matter.
+The [**duplicate-key policy**](/beam/docs/foundations/registries#key-policies) is
+**supersede**: registering a taken name replaces that navigation, which is how your application
+overrides one a package registered. Nothing enumerates across navigations, since each is built by
+name, so the replacement's position in registration order doesn't matter.
 
 ## Related registries
 

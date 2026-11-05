@@ -73,9 +73,10 @@ so a stale name in a stored tree degrades quietly instead of breaking the page.
 
 ## Duplicates
 
-The policy is **supersede**. Registering an invocable under a taken name replaces it, and that is
-the intended way to change resolution: register your own `data-nav.resolve` and every build uses
-your matcher and expander instead of the package's.
+The [**duplicate-key policy**](/beam/docs/foundations/registries#key-policies) is
+**supersede**. Registering an invocable under a taken name replaces it, and that is the intended way
+to change resolution: register your own `data-nav.resolve` and every build uses your matcher and
+expander instead of the package's.
 
 ## Related registries
 
