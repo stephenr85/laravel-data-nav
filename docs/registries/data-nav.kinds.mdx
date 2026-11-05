@@ -47,6 +47,12 @@ $this->app->make(NavKindRegistry::class)->register('app/team-switcher', TeamSwit
 Kinds keep their slash: `nav/link` is the exact string that ships to clients, so the registry stores
 it as spelled. `all()` returns every registered kind keyed that way.
 
+A registered kind only fixes the server side. On the client, a renderer that knows the kind can
+draw it as its own widget: beam-ux's `RealmNav` takes a `kinds` map from a kind to a component, and
+draws every kind it is not given as an ordinary row. `splicewire/laravel-beam-docs` registers
+`beam-docs/registry-index` this way. Its node carries the registry catalog as data, and
+`@splicewire/beam-docs` maps the kind to a search box over a collapsible tree.
+
 ## Reading it
 
 - `classFor($kind)` returns the class or `null`. `null` means "no custom class", and hydration falls
