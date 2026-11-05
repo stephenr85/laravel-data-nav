@@ -76,7 +76,7 @@ class NavKindRegistry implements Gated, Registry
         $this->kinds = BasicRegistry::for($this);
 
         foreach (self::BUILT_INS as $kind => $class) {
-            $this->kinds->register(RelativeUriKey::of($kind), $class, by: self::class);
+            $this->kinds->register(RelativeUriKey::of($kind), $class, by: 'rushing/laravel-data-nav');
         }
     }
 
